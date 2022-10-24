@@ -92,8 +92,8 @@ const AcuMobFunctionComponent = (props: AcuMobFunctionComponent) => {
   const [webRTCState, setWebRTCState] = useState('idle');
   const [calling, setCalling] = useState('');
   const [client, setClient] = useState(null);
-  const [remoteStream, setRemoteStream] = useState<MediaStream>();
-  const [localStream, setLocalStream] = useState<MediaStream>();
+  const [remoteStream, setRemoteStream] = useState<MediaStream | null>(null);
+  const [localStream, setLocalStream] = useState<MediaStream | null>(null);
   const [remoteVideoMuted, setRemoteVideoMuted] = useState(false);
   const [localVideoMuted, setLocalVideoMuted] = useState(false);
   const [localMicMuted, setLocalMicMuted] = useState(false);
@@ -119,6 +119,8 @@ const AcuMobFunctionComponent = (props: AcuMobFunctionComponent) => {
 
   try {
     AculabBaseClass.onDisconnected = function () {
+      setLocalStream(null);
+      setRemoteStream(null);
       setOutboundCall(false);
       setInboundCall(false);
       setWebRTCState('idle');
