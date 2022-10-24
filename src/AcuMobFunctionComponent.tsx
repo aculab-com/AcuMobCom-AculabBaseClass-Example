@@ -107,7 +107,6 @@ const AcuMobFunctionComponent = (props: AcuMobFunctionComponent) => {
       props.webRTCToken,
     );
     if (newClient) {
-      console.log('client', newClient);
       AculabBaseClass._client = newClient;
       AculabBaseClass._webRTCToken = props.webRTCToken;
       setClient(newClient);
@@ -120,47 +119,37 @@ const AcuMobFunctionComponent = (props: AcuMobFunctionComponent) => {
 
   try {
     AculabBaseClass.onDisconnected = function () {
-      console.log('callDisconnected HERE');
       setOutboundCall(false);
       setInboundCall(false);
       setWebRTCState('idle');
       setCalling('');
     };
     AculabBaseClass.onRinging = function () {
-      console.log('ringing HERE');
       setWebRTCState('ringing');
     };
     AculabBaseClass.onGotMedia = function () {
-      console.log('gotMedia HERE');
       setWebRTCState('gotMedia');
     };
     AculabBaseClass.onConnected = function (obj) {
-      console.log('connected HERE');
       setWebRTCState('connected');
       setLocalStream(AculabBaseClass.getLocalStream());
       setRemoteStream(obj.call._remote_stream);
     };
-    AculabBaseClass.onIncomingCall = function (obj: any) {
-      console.log('onIncoming HERE');
-      console.log('aculabClass call', obj);
+    AculabBaseClass.onIncomingCall = function () {
       setCalling('client');
       setWebRTCState('incomingCall');
       setInboundCall(true);
     };
     AculabBaseClass.onLocalVideoMute = function () {
-      console.log('onLocalVideoMute HERE');
       setLocalVideoMuted(true);
     };
     AculabBaseClass.onLocalVideoUnmute = function () {
-      console.log('onLocalVideoMute HERE');
       setLocalVideoMuted(false);
     };
     AculabBaseClass.onRemoteVideoMute = function () {
-      console.log('onLocalVideoMute HERE');
       setRemoteVideoMuted(true);
     };
     AculabBaseClass.onRemoteVideoUnmute = function () {
-      console.log('onLocalVideoMute HERE');
       setRemoteVideoMuted(false);
     };
   } catch (err: any) {
@@ -309,7 +298,6 @@ const AcuMobFunctionComponent = (props: AcuMobFunctionComponent) => {
   };
 
   const DisplayClientCall = () => {
-    console.log('HERE AND NOW');
     if (outboundCall && webRTCState !== 'connected') {
       return (
         <View style={styles.center}>
@@ -333,6 +321,7 @@ const AcuMobFunctionComponent = (props: AcuMobFunctionComponent) => {
             return (
               <View style={styles.vidview}>
                 <RTCView
+                  // @ts-ignore
                   streamURL={remoteStream.toURL()}
                   style={styles.rtcview}
                 />
@@ -350,6 +339,7 @@ const AcuMobFunctionComponent = (props: AcuMobFunctionComponent) => {
                 </View>
                 <View style={styles.rtc}>
                   <RTCView
+                    // @ts-ignore
                     streamURL={localStream.toURL()}
                     style={styles.rtcselfview}
                   />
@@ -372,11 +362,13 @@ const AcuMobFunctionComponent = (props: AcuMobFunctionComponent) => {
             return (
               <View style={styles.vidview}>
                 <RTCView
+                  // @ts-ignore
                   streamURL={remoteStream.toURL()}
                   style={styles.rtcview}
                 />
                 <View style={styles.rtc}>
                   <RTCView
+                    // @ts-ignore
                     streamURL={localStream.toURL()}
                     style={styles.rtcselfview}
                   />

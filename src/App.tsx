@@ -4,7 +4,6 @@ import { View, StatusBar } from 'react-native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { NavigationContainer } from '@react-navigation/native';
 import { styles, COLOURS } from './styles';
-// import AcuMob from './AcuMob';
 import AcuMobFunctionComponent from './AcuMobFunctionComponent';
 import { RegisterScreen } from './RegisterScreen';
 
@@ -20,13 +19,6 @@ function AcuMobComScreen({ route }: any) {
   } = route.params;
   return (
     <View style={styles.container}>
-      {/* <AcuMob
-        webRTCAccessKey={webRTCAccessKey}
-        cloudRegionId={cloudRegionId}
-        logLevel={logLevel}
-        registerClientId={registerClientId}
-        webRTCToken={webRTCToken}
-      /> */}
       <AcuMobFunctionComponent
         webRTCAccessKey={webRTCAccessKey}
         cloudRegionId={cloudRegionId}
