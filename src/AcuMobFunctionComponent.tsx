@@ -108,7 +108,6 @@ const AcuMobFunctionComponent = (props: AcuMobFunctionComponent) => {
     );
     if (newClient) {
       AculabBaseClass._client = newClient;
-      AculabBaseClass._webRTCToken = props.webRTCToken;
       setClient(newClient);
     }
   };
@@ -406,9 +405,12 @@ const AcuMobFunctionComponent = (props: AcuMobFunctionComponent) => {
           <MenuButton
             title={'Call Service'}
             onPress={() => {
-              setOutboundCall(true);
-              setCalling('service');
-              AculabBaseClass._call = AculabBaseClass.callService(serviceName);
+              if (serviceName.length > 0) {
+                setCalling('client');
+                setOutboundCall(true);
+                AculabBaseClass._activeCall =
+                  AculabBaseClass.callService(clientName);
+              }
             }}
           />
         </View>
@@ -424,9 +426,12 @@ const AcuMobFunctionComponent = (props: AcuMobFunctionComponent) => {
           <MenuButton
             title={'Call Client'}
             onPress={() => {
-              setOutboundCall(true);
-              setCalling('client');
-              AculabBaseClass._call = AculabBaseClass.callClient(clientName);
+              if (clientName.length > 0) {
+                setCalling('client');
+                setOutboundCall(true);
+                AculabBaseClass._activeCall =
+                  AculabBaseClass.callClient(clientName);
+              }
             }}
           />
         </View>
