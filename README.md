@@ -1,6 +1,8 @@
-# AculabBaseClass Example (Demo)
+# AcuMobCom using AculabBaseClass-Example
 
-This Example demonstrates use of the AculabBaseClass from [react-native-aculab-client](https://www.npmjs.com/package/react-native-aculab-client). It allows you to make calls to Aculab cloud services from iOS and Android platforms and to send dtmf. It Also supports peer-to-peer video/audio calls. The class should be embedded in class or function component.
+This Example demonstrates how to create and use AcuMobCom function component using the AculabBaseClass from [react-native-aculab-client](https://www.npmjs.com/package/react-native-aculab-client). It allows you to make calls to Aculab cloud services from iOS and Android platforms and to send dtmf. It Also supports peer-to-peer video/audio calls.
+
+Please NOTE that this app needs to run on real devices and does not work with simulators and emulators. Furthermore, to run iOS you are expected to install pods and after open ios/AcuMobComExample.xcworkspace in Xcode
 
 ---
 
