@@ -406,10 +406,10 @@ const AcuMobFunctionComponent = (props: AcuMobFunctionComponent) => {
             title={'Call Service'}
             onPress={() => {
               if (serviceName.length > 0) {
-                setCalling('client');
+                setCalling('service');
                 setOutboundCall(true);
                 AculabBaseClass._activeCall =
-                  AculabBaseClass.callService(clientName);
+                  AculabBaseClass.callService(serviceName);
               }
             }}
           />
