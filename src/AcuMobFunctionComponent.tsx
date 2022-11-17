@@ -20,48 +20,6 @@ import { CallButton } from './components/CallButton';
 import { RoundButton } from './components/RoundButton';
 import { useNavigation } from '@react-navigation/native';
 
-const MainCallButtons = (aculabBaseClass: typeof AculabBaseClass) => {
-  const [speakerOn, setSpeakerOn] = useState(false);
-
-  useEffect(() => {
-    turnOnSpeaker(speakerOn);
-  }, [speakerOn]);
-
-  return (
-    <View style={styles.callButtonsContainer}>
-      <CallButton
-        title={'Hang up'}
-        colour={COLOURS.RED}
-        onPress={() => aculabBaseClass.stopCall()}
-      />
-      <CallButton
-        title={'Speaker'}
-        colour={COLOURS.SPEAKER_BUTTON}
-        onPress={() => {
-          setSpeakerOn(!speakerOn);
-        }}
-      />
-    </View>
-  );
-};
-
-const ButtonsIncoming = (aculabBaseClass: typeof AculabBaseClass) => {
-  return (
-    <View style={styles.callButtonsContainer}>
-      <CallButton
-        title={'Reject'}
-        colour={COLOURS.RED}
-        onPress={() => aculabBaseClass.reject()}
-      />
-      <CallButton
-        title={'Accept'}
-        colour={COLOURS.GREEN}
-        onPress={() => aculabBaseClass.answer()}
-      />
-    </View>
-  );
-};
-
 const RegisterButton = (aculabBaseClass: typeof AculabBaseClass) => {
   const navigation = useNavigation();
   return (
@@ -85,18 +43,23 @@ type AcuMobFunctionComponent = {
   logLevel: string;
 };
 
+type CallType = 'none' | 'client' | 'service';
+
 const AcuMobFunctionComponent = (props: AcuMobFunctionComponent) => {
   let registerClientId = props.registerClientId;
   const [outboundCall, setOutboundCall] = useState(false);
   const [inboundCall, setInboundCall] = useState(false);
   const [webRTCState, setWebRTCState] = useState('idle');
-  const [calling, setCalling] = useState('');
+  const [callType, setCallType] = useState<CallType>('none');
   const [client, setClient] = useState(null);
+  const [activeCall, setActiveCall] = useState(null);
   const [remoteStream, setRemoteStream] = useState<MediaStream | null>(null);
   const [localStream, setLocalStream] = useState<MediaStream | null>(null);
   const [remoteVideoMuted, setRemoteVideoMuted] = useState(false);
   const [localVideoMuted, setLocalVideoMuted] = useState(false);
   const [localMicMuted, setLocalMicMuted] = useState(false);
+  const [callClientId, setCallClientId] = useState('');
+  const [callServiceId, setCallServiceId] = useState('');
 
   const registerClient = async () => {
     let newClient = await AculabBaseClass.register(
@@ -123,7 +86,8 @@ const AcuMobFunctionComponent = (props: AcuMobFunctionComponent) => {
       setOutboundCall(false);
       setInboundCall(false);
       setWebRTCState('idle');
-      setCalling('');
+      setCallType('none');
+      setActiveCall(null);
     };
     AculabBaseClass.onRinging = function () {
       setWebRTCState('ringing');
@@ -133,13 +97,14 @@ const AcuMobFunctionComponent = (props: AcuMobFunctionComponent) => {
     };
     AculabBaseClass.onConnected = function (obj) {
       setWebRTCState('connected');
-      setLocalStream(AculabBaseClass.getLocalStream());
+      setLocalStream(AculabBaseClass.getLocalStream(activeCall));
       setRemoteStream(obj.call._remote_stream);
     };
-    AculabBaseClass.onIncomingCall = function () {
-      setCalling('client');
+    AculabBaseClass.onIncomingCall = function (obj) {
+      setCallType('client');
       setWebRTCState('incomingCall');
       setInboundCall(true);
+      setActiveCall(obj.call);
     };
     AculabBaseClass.onLocalVideoMute = function () {
       setLocalVideoMuted(true);
@@ -192,8 +157,25 @@ const AcuMobFunctionComponent = (props: AcuMobFunctionComponent) => {
     );
   };
 
+  const ButtonsIncoming = () => {
+    return (
+      <View style={styles.callButtonsContainer}>
+        <CallButton
+          title={'Reject'}
+          colour={COLOURS.RED}
+          onPress={() => AculabBaseClass.reject(activeCall)}
+        />
+        <CallButton
+          title={'Accept'}
+          colour={COLOURS.GREEN}
+          onPress={() => AculabBaseClass.answer(activeCall)}
+        />
+      </View>
+    );
+  };
+
   const CallDisplayHandler = () => {
-    switch (calling) {
+    switch (callType) {
       case 'client':
         return <DisplayClientCall />;
       case 'service':
@@ -220,77 +202,98 @@ const AcuMobFunctionComponent = (props: AcuMobFunctionComponent) => {
     }
   };
 
+  const MainCallButtons = () => {
+    const [speakerOn, setSpeakerOn] = useState(false);
+
+    useEffect(() => {
+      turnOnSpeaker(speakerOn);
+    }, [speakerOn]);
+
+    return (
+      <View style={styles.callButtonsContainer}>
+        <CallButton
+          title={'Hang up'}
+          colour={COLOURS.RED}
+          onPress={() => AculabBaseClass.stopCall(activeCall)}
+        />
+        <CallButton
+          title={'Speaker'}
+          colour={COLOURS.SPEAKER_BUTTON}
+          onPress={() => {
+            setSpeakerOn(!speakerOn);
+          }}
+        />
+      </View>
+    );
+  };
+
   const DialKeypad = () => {
     return (
       <View style={styles.dialKeypad}>
         {webRTCState === 'calling' || webRTCState === 'ringing' ? (
           <View>
-            <Text style={styles.callingText}>
-              Calling {AculabBaseClass._callServiceName}
-            </Text>
+            <Text style={styles.callingText}>Calling {callServiceId}</Text>
           </View>
         ) : (
           <View>
-            <Text style={styles.callingText}>
-              Service {AculabBaseClass._callServiceName}
-            </Text>
+            <Text style={styles.callingText}>Service {callServiceId}</Text>
           </View>
         )}
         <View>
           <View style={styles.callButtonsContainer}>
             <KeypadButton
               title={'1'}
-              onPress={() => AculabBaseClass.sendDtmf('1')}
+              onPress={() => AculabBaseClass.sendDtmf('1', activeCall)}
             />
             <KeypadButton
               title={'2'}
-              onPress={() => AculabBaseClass.sendDtmf('2')}
+              onPress={() => AculabBaseClass.sendDtmf('2', activeCall)}
             />
             <KeypadButton
               title={'3'}
-              onPress={() => AculabBaseClass.sendDtmf('3')}
+              onPress={() => AculabBaseClass.sendDtmf('3', activeCall)}
             />
           </View>
           <View style={styles.callButtonsContainer}>
             <KeypadButton
               title={'4'}
-              onPress={() => AculabBaseClass.sendDtmf('4')}
+              onPress={() => AculabBaseClass.sendDtmf('4', activeCall)}
             />
             <KeypadButton
               title={'5'}
-              onPress={() => AculabBaseClass.sendDtmf('5')}
+              onPress={() => AculabBaseClass.sendDtmf('5', activeCall)}
             />
             <KeypadButton
               title={'6'}
-              onPress={() => AculabBaseClass.sendDtmf('6')}
+              onPress={() => AculabBaseClass.sendDtmf('6', activeCall)}
             />
           </View>
           <View style={styles.callButtonsContainer}>
             <KeypadButton
               title={'7'}
-              onPress={() => AculabBaseClass.sendDtmf('7')}
+              onPress={() => AculabBaseClass.sendDtmf('7', activeCall)}
             />
             <KeypadButton
               title={'8'}
-              onPress={() => AculabBaseClass.sendDtmf('8')}
+              onPress={() => AculabBaseClass.sendDtmf('8', activeCall)}
             />
             <KeypadButton
               title={'9'}
-              onPress={() => AculabBaseClass.sendDtmf('9')}
+              onPress={() => AculabBaseClass.sendDtmf('9', activeCall)}
             />
           </View>
           <View style={styles.callButtonsContainer}>
             <KeypadButton
               title={'*'}
-              onPress={() => AculabBaseClass.sendDtmf('*')}
+              onPress={() => AculabBaseClass.sendDtmf('*', activeCall)}
             />
             <KeypadButton
               title={'0'}
-              onPress={() => AculabBaseClass.sendDtmf('0')}
+              onPress={() => AculabBaseClass.sendDtmf('0', activeCall)}
             />
             <KeypadButton
               title={'#'}
-              onPress={() => AculabBaseClass.sendDtmf('#')}
+              onPress={() => AculabBaseClass.sendDtmf('#', activeCall)}
             />
           </View>
         </View>
@@ -302,9 +305,7 @@ const AcuMobFunctionComponent = (props: AcuMobFunctionComponent) => {
     if (outboundCall && webRTCState !== 'connected') {
       return (
         <View style={styles.center}>
-          <Text style={styles.callingText}>
-            Calling {AculabBaseClass._callClientName}
-          </Text>
+          <Text style={styles.callingText}>Calling {callClientId}</Text>
         </View>
       );
     } else if (inboundCall && webRTCState !== 'connected') {
@@ -384,12 +385,8 @@ const AcuMobFunctionComponent = (props: AcuMobFunctionComponent) => {
   };
 
   const CallOutComponent = () => {
-    const [serviceName, setServiceName] = useState(
-      AculabBaseClass._callServiceName,
-    );
-    const [clientName, setClientName] = useState(
-      AculabBaseClass._callClientName,
-    );
+    const [serviceName, setServiceName] = useState(callServiceId);
+    const [clientName, setClientName] = useState(callClientId);
     return (
       <View style={styles.inputContainer}>
         <View>
@@ -406,10 +403,10 @@ const AcuMobFunctionComponent = (props: AcuMobFunctionComponent) => {
             title={'Call Service'}
             onPress={() => {
               if (serviceName.length > 0) {
-                setCalling('client');
+                setCallType('service');
                 setOutboundCall(true);
-                AculabBaseClass._activeCall =
-                  AculabBaseClass.callService(clientName);
+                setCallServiceId(serviceName);
+                setActiveCall(AculabBaseClass.callService(serviceName));
               }
             }}
           />
@@ -420,17 +417,17 @@ const AcuMobFunctionComponent = (props: AcuMobFunctionComponent) => {
             style={styles.input}
             placeholder={'example: anna123'}
             placeholderTextColor={COLOURS.INPUT_PLACEHOLDER}
-            onChangeText={setClientName}
+            onChangeText={text => setClientName(deleteSpaces(text))}
             value={clientName}
           />
           <MenuButton
             title={'Call Client'}
             onPress={() => {
               if (clientName.length > 0) {
-                setCalling('client');
+                setCallType('client');
                 setOutboundCall(true);
-                AculabBaseClass._activeCall =
-                  AculabBaseClass.callClient(clientName);
+                setCallClientId(clientName);
+                setActiveCall(AculabBaseClass.callClient(clientName));
               }
             }}
           />
@@ -442,19 +439,19 @@ const AcuMobFunctionComponent = (props: AcuMobFunctionComponent) => {
   const CallButtonsHandler = () => {
     if (inboundCall && webRTCState === 'incomingCall') {
       //incoming call
-      return <ButtonsIncoming {...AculabBaseClass} />;
+      return <ButtonsIncoming />;
     } else if (inboundCall || outboundCall) {
-      if (calling === 'client' && webRTCState === 'connected') {
+      if (callType === 'client' && webRTCState === 'connected') {
         // client call connected
         return (
           <View>
             <ClientCallButtons />
-            <MainCallButtons {...AculabBaseClass} />
+            <MainCallButtons />
           </View>
         );
       } else {
         // client call not connected or service call
-        return <MainCallButtons {...AculabBaseClass} />;
+        return <MainCallButtons />;
       }
     } else {
       // idle state
@@ -479,14 +476,14 @@ const AcuMobFunctionComponent = (props: AcuMobFunctionComponent) => {
       <View style={styles.callButtonsContainer}>
         <RoundButton
           iconName={'camera-reverse-outline'}
-          onPress={() => AculabBaseClass.swapCam()}
+          onPress={() => AculabBaseClass.swapCam(localVideoMuted, activeCall)}
         />
         <RoundButton
           iconName={videoIcon}
           onPress={() => {
             AculabBaseClass._camera = !AculabBaseClass._camera;
             setLocalVideoMuted(!localVideoMuted);
-            AculabBaseClass.mute();
+            AculabBaseClass.mute(activeCall);
           }}
         />
         <RoundButton
@@ -494,7 +491,7 @@ const AcuMobFunctionComponent = (props: AcuMobFunctionComponent) => {
           onPress={() => {
             AculabBaseClass._mic = !AculabBaseClass._mic;
             setLocalMicMuted(!localMicMuted);
-            AculabBaseClass.mute();
+            AculabBaseClass.mute(activeCall);
           }}
         />
       </View>
