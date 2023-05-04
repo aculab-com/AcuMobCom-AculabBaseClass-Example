@@ -74,6 +74,7 @@ PODS:
   - fmt (6.2.1)
   - glog (0.3.5)
   - hermes-engine (0.70.1)
+  - JitsiWebRTC (106.0.0)
   - libevent (2.1.12)
   - OpenSSL-Universal (1.1.1100)
   - RCT-Folly (2021.07.22.00):
@@ -302,16 +303,17 @@ PODS:
   - React-jsinspector (0.70.1)
   - React-logger (0.70.1):
     - glog
-  - react-native-aculab-client (1.2.0):
+  - react-native-aculab-client (1.2.3-beta):
     - React-Core
     - react-native-webrtc
-  - react-native-safe-area-context (4.3.4):
+  - react-native-safe-area-context (4.5.2):
     - RCT-Folly
     - RCTRequired
     - RCTTypeSafety
     - React-Core
     - ReactCommon/turbomodule/core
-  - react-native-webrtc (1.100.1):
+  - react-native-webrtc (1.106.1):
+    - JitsiWebRTC (~> 106.0.0)
     - React-Core
   - React-perflogger (0.70.1)
   - React-RCTActionSheet (0.70.1):
@@ -379,9 +381,9 @@ PODS:
     - React-jsi (= 0.70.1)
     - React-logger (= 0.70.1)
     - React-perflogger (= 0.70.1)
-  - RNGestureHandler (2.6.2):
+  - RNGestureHandler (2.9.0):
     - React-Core
-  - RNScreens (3.17.0):
+  - RNScreens (3.20.0):
     - React-Core
     - React-RCTImage
   - SocketRocket (0.6.0)
@@ -468,6 +470,7 @@ SPEC REPOS:
     - Flipper-RSocket
     - FlipperKit
     - fmt
+    - JitsiWebRTC
     - libevent
     - OpenSSL-Universal
     - SocketRocket
@@ -571,6 +574,7 @@ SPEC CHECKSUMS:
   fmt: ff9d55029c625d3757ed641535fd4a75fedc7ce9
   glog: 04b94705f318337d7ead9e6d17c019bd9b1f6b1b
   hermes-engine: 9cd393f741bfa14d1d0cd90cc373e3619c0bc7ea
+  JitsiWebRTC: f441eb0e2d67f0588bf24e21c5162e97342714fb
   libevent: 4049cae6c81cdb3654a443be001fb9bdceff7913
   OpenSSL-Universal: ebc357f1e6bc71fa463ccb2fe676756aff50e88c
   RCT-Folly: 0080d0a6ebf2577475bda044aa59e2ca1f909cda
@@ -588,9 +592,9 @@ SPEC CHECKSUMS:
   React-jsiexecutor: 47201924064085223b63ec7e3ee9fd40ad8508e8
   React-jsinspector: 1363be638eccfe1aea1b10dd42e632b0397e5ec8
   React-logger: 7bd569e3857d74ed412ce0a5c51f421ff7d4ca7f
-  react-native-aculab-client: 67925b264ad05d629858a942dd97aed3577a36e7
-  react-native-safe-area-context: dfe5aa13bee37a0c7e8059d14f72ffc076d120e9
-  react-native-webrtc: 206a0ac12a5633d2ec4605174d7c9f12f0d674b2
+  react-native-aculab-client: bd1dca28aa28ffc83a55ae9a90e4dfb1716b3fa2
+  react-native-safe-area-context: 1d596539b05a78f2b346e954e7c577f6f9be7544
+  react-native-webrtc: 4a4c31be61f88d1d3356526eebce72f462a6760e
   React-perflogger: 48c6b363e867d64b682e84f80ca45636bd65e19c
   React-RCTActionSheet: 33c74fe5c754835e3715c300618da9aa2f7203fa
   React-RCTAnimation: 2dbf0120d4d1ab7716079b4180f2ca89c465e46b
@@ -603,12 +607,12 @@ SPEC CHECKSUMS:
   React-RCTVibration: e9164827303fb6a5cf79e4c4af4846a09956b11f
   React-runtimeexecutor: a11d0c2e14140baf1e449264ca9168ae9ae6bbd0
   ReactCommon: 7f86326b92009925c6dcf93f8e825060171c379f
-  RNGestureHandler: 4defbd70b2faf3d6761b82fa7880285241762cb0
-  RNScreens: 0df01424e9e0ed7827200d6ed1087ddd06c493f9
+  RNGestureHandler: 071d7a9ad81e8b83fe7663b303d132406a7d8f39
+  RNScreens: 218801c16a2782546d30bd2026bb625c0302d70f
   SocketRocket: fccef3f9c5cedea1353a9ef6ada904fde10d6608
   Yoga: 6c8252e38d65aa387daee699eacf027e055e0b31
   YogaKit: f782866e155069a2cca2517aafea43200b01fd5a
 
-PODFILE CHECKSUM: 60520f830b6fb83f6046f36438eeb3827c0844fc
+PODFILE CHECKSUM: 34e9cccac718a246100b5836ad9b5d2e162ce24d
 
-COCOAPODS: 1.11.3
+COCOAPODS: 1.12.0

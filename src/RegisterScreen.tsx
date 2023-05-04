@@ -31,18 +31,18 @@ export const RegisterScreen = () => {
   const navigation = useNavigation<Props>();
 
   const getWebRTCToken = async () => {
-    try {
-      let token = await getToken({
-        registerClientId: registerClientId,
-        tokenLifeTime: 3600,
-        enableIncomingCall: true,
-        callClientRange: '*',
-        cloudRegionId: cloudRegionId,
-        cloudUsername: cloudUsername,
-        apiAccessKey: apiAccessKey,
-      });
+    let token = await getToken({
+      registerClientId: registerClientId,
+      tokenLifeTime: 3600,
+      enableIncomingCall: true,
+      callClientRange: '*',
+      cloudRegionId: cloudRegionId,
+      cloudUsername: cloudUsername,
+      apiAccessKey: apiAccessKey,
+    });
+    if (token !== 'undefined') {
       setWebRTCToken(token);
-    } catch {
+    } else {
       showAlert(
         '',
         'Credential are incorrect: Check API Access Key, Cloud Region ID, Cloud Username and Register Client ID',
