@@ -5,7 +5,11 @@ import { useNavigation } from '@react-navigation/native';
 import { styles, COLOURS } from './styles';
 import type { AuthStackParam } from './types';
 import { MenuButton } from './components/MenuButton';
-import { getToken, deleteSpaces, showAlert } from 'react-native-aculab-client';
+import {
+  getToken,
+  deleteSpaces,
+  showAlert,
+} from '@aculab-com/react-native-aculab-client';
 
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { DEV_CONSTANTS } from '../devConstants.dev';

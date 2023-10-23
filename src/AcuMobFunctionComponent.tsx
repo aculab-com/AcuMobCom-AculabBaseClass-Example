@@ -13,7 +13,7 @@ import {
   turnOnSpeaker,
   deleteSpaces,
   AculabBaseClass,
-} from 'react-native-aculab-client';
+} from '@aculab-com/react-native-aculab-client';
 import { MenuButton } from './components/MenuButton';
 import { KeypadButton } from './components/KeypadButton';
 import { CallButton } from './components/CallButton';
