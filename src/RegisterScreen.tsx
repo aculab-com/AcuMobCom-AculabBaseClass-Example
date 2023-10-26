@@ -60,6 +60,7 @@ export const RegisterScreen = () => {
         <Text style={styles.basicText}>Web RTC Access Key</Text>
         <TextInput
           style={styles.input}
+          autoCapitalize={'none'}
           placeholder={'example: heh0zprmk7okgtl90dx0i9xoa'}
           placeholderTextColor={COLOURS.INPUT_PLACEHOLDER}
           onChangeText={text => setWebRTCAccessKey(deleteSpaces(text))}
@@ -68,6 +69,7 @@ export const RegisterScreen = () => {
         <Text style={styles.basicText}>API Access Key</Text>
         <TextInput
           style={styles.input}
+          autoCapitalize={'none'}
           placeholder={'example: RIBnMDn8Vgeel8JwPmnwFQ'}
           placeholderTextColor={COLOURS.INPUT_PLACEHOLDER}
           onChangeText={text => setApiAccessKey(deleteSpaces(text))}
@@ -76,6 +78,7 @@ export const RegisterScreen = () => {
         <Text style={styles.basicText}>Cloud Region ID</Text>
         <TextInput
           style={styles.input}
+          autoCapitalize={'none'}
           placeholder={'example: 0-2-0'}
           placeholderTextColor={COLOURS.INPUT_PLACEHOLDER}
           onChangeText={text => setCloudRegionId(deleteSpaces(text))}
@@ -84,6 +87,7 @@ export const RegisterScreen = () => {
         <Text style={styles.basicText}>Cloud Username</Text>
         <TextInput
           style={styles.input}
+          autoCapitalize={'none'}
           placeholder={'example: anna.new@aculab.com'}
           placeholderTextColor={COLOURS.INPUT_PLACEHOLDER}
           onChangeText={text => setCloudUsername(deleteSpaces(text))}
@@ -92,6 +96,7 @@ export const RegisterScreen = () => {
         <Text style={styles.basicText}>Log Level</Text>
         <TextInput
           style={styles.input}
+          autoCapitalize={'none'}
           placeholder={'example: 2'}
           placeholderTextColor={COLOURS.INPUT_PLACEHOLDER}
           onChangeText={text => setLogLevel(deleteSpaces(text))}
@@ -100,6 +105,7 @@ export const RegisterScreen = () => {
         <Text style={styles.basicText}>Register Client ID</Text>
         <TextInput
           style={styles.input}
+          autoCapitalize={'none'}
           placeholder={'example: anna123'}
           placeholderTextColor={COLOURS.INPUT_PLACEHOLDER}
           onChangeText={text => setRegisterClientId(deleteSpaces(text))}

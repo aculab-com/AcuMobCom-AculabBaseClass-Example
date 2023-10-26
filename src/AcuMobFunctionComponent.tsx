@@ -393,7 +393,8 @@ const AcuMobFunctionComponent = (props: AcuMobFunctionComponent) => {
           <Text style={styles.basicText}>Service Name</Text>
           <TextInput
             style={styles.input}
-            placeholder={'example: --15993377'}
+            autoCapitalize={'none'}
+            placeholder={'example: webrtcdemo'}
             placeholderTextColor={COLOURS.INPUT_PLACEHOLDER}
             onChangeText={text => setServiceName(deleteSpaces(text))}
             value={serviceName}
@@ -415,6 +416,7 @@ const AcuMobFunctionComponent = (props: AcuMobFunctionComponent) => {
           <Text style={styles.basicText}>Client ID</Text>
           <TextInput
             style={styles.input}
+            autoCapitalize={'none'}
             placeholder={'example: anna123'}
             placeholderTextColor={COLOURS.INPUT_PLACEHOLDER}
             onChangeText={text => setClientName(deleteSpaces(text))}
