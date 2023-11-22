@@ -6,6 +6,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { styles, COLOURS } from './styles';
 import AcuMobFunctionComponent from './AcuMobFunctionComponent';
 import { RegisterScreen } from './RegisterScreen';
+import type { AcuMobComParam } from './types';
 
 const Stack = createNativeStackNavigator();
 
@@ -16,7 +17,7 @@ function AcuMobComScreen({ route }: any) {
     logLevel,
     registerClientId,
     webRTCToken,
-  } = route.params;
+  } = route.params as AcuMobComParam;
   return (
     <View style={styles.container}>
       <AcuMobFunctionComponent

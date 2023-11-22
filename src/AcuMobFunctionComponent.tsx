@@ -19,6 +19,12 @@ import { KeypadButton } from './components/KeypadButton';
 import { CallButton } from './components/CallButton';
 import { RoundButton } from './components/RoundButton';
 import { useNavigation } from '@react-navigation/native';
+import type AculabCloudClient from '@aculab-com/aculab-webrtc';
+import type { Call } from '@aculab-com/react-native-aculab-client/lib/typescript/types';
+import type {
+  AculabCloudIncomingCall,
+  AculabCloudOutgoingCall,
+} from '@aculab-com/aculab-webrtc/lib/types';
 
 const RegisterButton = (aculabBaseClass: typeof AculabBaseClass) => {
   const navigation = useNavigation();
@@ -40,7 +46,7 @@ type AcuMobFunctionComponent = {
   webRTCAccessKey: string;
   cloudRegionId: string;
   registerClientId: string;
-  logLevel: string;
+  logLevel: string | number;
 };
 
 type CallType = 'none' | 'client' | 'service';
@@ -51,8 +57,8 @@ const AcuMobFunctionComponent = (props: AcuMobFunctionComponent) => {
   const [inboundCall, setInboundCall] = useState(false);
   const [webRTCState, setWebRTCState] = useState('idle');
   const [callType, setCallType] = useState<CallType>('none');
-  const [client, setClient] = useState(null);
-  const [activeCall, setActiveCall] = useState(null);
+  const [client, setClient] = useState<AculabCloudClient | null>(null);
+  const [activeCall, setActiveCall] = useState<Call | null>(null);
   const [remoteStream, setRemoteStream] = useState<MediaStream | null>(null);
   const [localStream, setLocalStream] = useState<MediaStream | null>(null);
   const [remoteVideoMuted, setRemoteVideoMuted] = useState(false);
@@ -62,7 +68,7 @@ const AcuMobFunctionComponent = (props: AcuMobFunctionComponent) => {
   const [callServiceId, setCallServiceId] = useState('');
 
   const registerClient = async () => {
-    let newClient = await AculabBaseClass.register(
+    let newClient = AculabBaseClass.register(
       props.cloudRegionId,
       props.webRTCAccessKey,
       registerClientId,
@@ -92,37 +98,42 @@ const AcuMobFunctionComponent = (props: AcuMobFunctionComponent) => {
     AculabBaseClass.onRinging = function () {
       setWebRTCState('ringing');
     };
-    AculabBaseClass.onGotMedia = function () {
+    AculabBaseClass.onGotMedia = function (_obj) {
+      setRemoteStream(_obj.stream);
       setWebRTCState('gotMedia');
     };
-    AculabBaseClass.onConnected = function (obj) {
+    AculabBaseClass.onConnected = async function (_obj) {
       setWebRTCState('connected');
-      setLocalStream(AculabBaseClass.getLocalStream(activeCall));
-      setRemoteStream(obj.call._remote_stream);
+      setLocalStream(
+        await AculabBaseClass.getLocalStream(
+          activeCall as AculabCloudOutgoingCall,
+        ),
+      );
+      // setRemoteStream(obj.call._remote_stream);
     };
-    AculabBaseClass.onIncomingCall = function (obj) {
+    AculabBaseClass.onIncomingCall = function (_obj) {
       setCallType('client');
       setWebRTCState('incomingCall');
       setInboundCall(true);
-      setActiveCall(obj.call);
+      setActiveCall(_obj.call);
     };
-    AculabBaseClass.onLocalVideoMute = function () {
+    AculabBaseClass.onLocalVideoMute = function (_obj) {
       setLocalVideoMuted(true);
     };
-    AculabBaseClass.onLocalVideoUnmute = function () {
+    AculabBaseClass.onLocalVideoUnmute = function (_obj) {
       setLocalVideoMuted(false);
     };
-    AculabBaseClass.onRemoteVideoMute = function () {
+    AculabBaseClass.onRemoteVideoMute = function (_obj) {
       setRemoteVideoMuted(true);
     };
-    AculabBaseClass.onRemoteVideoUnmute = function () {
+    AculabBaseClass.onRemoteVideoUnmute = function (_obj) {
       setRemoteVideoMuted(false);
     };
   } catch (err: any) {
     console.error('[ AculabBaseClass ]', err);
   }
 
-  const CallHeadComponent = (): any => {
+  const CallHeadComponent = () => {
     return (
       <View style={styles.row}>
         <View style={styles.callHead}>
@@ -163,12 +174,16 @@ const AcuMobFunctionComponent = (props: AcuMobFunctionComponent) => {
         <CallButton
           title={'Reject'}
           colour={COLOURS.RED}
-          onPress={() => AculabBaseClass.reject(activeCall)}
+          onPress={() =>
+            AculabBaseClass.reject(activeCall as AculabCloudIncomingCall)
+          }
         />
         <CallButton
           title={'Accept'}
           colour={COLOURS.GREEN}
-          onPress={() => AculabBaseClass.answer(activeCall)}
+          onPress={() =>
+            AculabBaseClass.answer(activeCall as AculabCloudIncomingCall)
+          }
         />
       </View>
     );
@@ -214,7 +229,7 @@ const AcuMobFunctionComponent = (props: AcuMobFunctionComponent) => {
         <CallButton
           title={'Hang up'}
           colour={COLOURS.RED}
-          onPress={() => AculabBaseClass.stopCall(activeCall)}
+          onPress={() => AculabBaseClass.stopCall(activeCall!)}
         />
         <CallButton
           title={'Speaker'}
@@ -243,57 +258,117 @@ const AcuMobFunctionComponent = (props: AcuMobFunctionComponent) => {
           <View style={styles.callButtonsContainer}>
             <KeypadButton
               title={'1'}
-              onPress={() => AculabBaseClass.sendDtmf('1', activeCall)}
+              onPress={() =>
+                AculabBaseClass.sendDtmf(
+                  '1',
+                  activeCall as AculabCloudOutgoingCall,
+                )
+              }
             />
             <KeypadButton
               title={'2'}
-              onPress={() => AculabBaseClass.sendDtmf('2', activeCall)}
+              onPress={() =>
+                AculabBaseClass.sendDtmf(
+                  '2',
+                  activeCall as AculabCloudOutgoingCall,
+                )
+              }
             />
             <KeypadButton
               title={'3'}
-              onPress={() => AculabBaseClass.sendDtmf('3', activeCall)}
+              onPress={() =>
+                AculabBaseClass.sendDtmf(
+                  '3',
+                  activeCall as AculabCloudOutgoingCall,
+                )
+              }
             />
           </View>
           <View style={styles.callButtonsContainer}>
             <KeypadButton
               title={'4'}
-              onPress={() => AculabBaseClass.sendDtmf('4', activeCall)}
+              onPress={() =>
+                AculabBaseClass.sendDtmf(
+                  '4',
+                  activeCall as AculabCloudOutgoingCall,
+                )
+              }
             />
             <KeypadButton
               title={'5'}
-              onPress={() => AculabBaseClass.sendDtmf('5', activeCall)}
+              onPress={() =>
+                AculabBaseClass.sendDtmf(
+                  '5',
+                  activeCall as AculabCloudOutgoingCall,
+                )
+              }
             />
             <KeypadButton
               title={'6'}
-              onPress={() => AculabBaseClass.sendDtmf('6', activeCall)}
+              onPress={() =>
+                AculabBaseClass.sendDtmf(
+                  '6',
+                  activeCall as AculabCloudOutgoingCall,
+                )
+              }
             />
           </View>
           <View style={styles.callButtonsContainer}>
             <KeypadButton
               title={'7'}
-              onPress={() => AculabBaseClass.sendDtmf('7', activeCall)}
+              onPress={() =>
+                AculabBaseClass.sendDtmf(
+                  '7',
+                  activeCall as AculabCloudOutgoingCall,
+                )
+              }
             />
             <KeypadButton
               title={'8'}
-              onPress={() => AculabBaseClass.sendDtmf('8', activeCall)}
+              onPress={() =>
+                AculabBaseClass.sendDtmf(
+                  '8',
+                  activeCall as AculabCloudOutgoingCall,
+                )
+              }
             />
             <KeypadButton
               title={'9'}
-              onPress={() => AculabBaseClass.sendDtmf('9', activeCall)}
+              onPress={() =>
+                AculabBaseClass.sendDtmf(
+                  '9',
+                  activeCall as AculabCloudOutgoingCall,
+                )
+              }
             />
           </View>
           <View style={styles.callButtonsContainer}>
             <KeypadButton
               title={'*'}
-              onPress={() => AculabBaseClass.sendDtmf('*', activeCall)}
+              onPress={() =>
+                AculabBaseClass.sendDtmf(
+                  '*',
+                  activeCall as AculabCloudOutgoingCall,
+                )
+              }
             />
             <KeypadButton
               title={'0'}
-              onPress={() => AculabBaseClass.sendDtmf('0', activeCall)}
+              onPress={() =>
+                AculabBaseClass.sendDtmf(
+                  '0',
+                  activeCall as AculabCloudOutgoingCall,
+                )
+              }
             />
             <KeypadButton
               title={'#'}
-              onPress={() => AculabBaseClass.sendDtmf('#', activeCall)}
+              onPress={() =>
+                AculabBaseClass.sendDtmf(
+                  '#',
+                  activeCall as AculabCloudOutgoingCall,
+                )
+              }
             />
           </View>
         </View>
@@ -407,7 +482,11 @@ const AcuMobFunctionComponent = (props: AcuMobFunctionComponent) => {
                 setCallType('service');
                 setOutboundCall(true);
                 setCallServiceId(serviceName);
-                setActiveCall(AculabBaseClass.callService(serviceName));
+                setActiveCall(
+                  AculabBaseClass.callService(
+                    serviceName,
+                  ) as AculabCloudOutgoingCall,
+                );
               }
             }}
           />
@@ -429,7 +508,11 @@ const AcuMobFunctionComponent = (props: AcuMobFunctionComponent) => {
                 setCallType('client');
                 setOutboundCall(true);
                 setCallClientId(clientName);
-                setActiveCall(AculabBaseClass.callClient(clientName));
+                setActiveCall(
+                  AculabBaseClass.callClient(
+                    clientName,
+                  ) as AculabCloudOutgoingCall,
+                );
               }
             }}
           />
@@ -478,14 +561,19 @@ const AcuMobFunctionComponent = (props: AcuMobFunctionComponent) => {
       <View style={styles.callButtonsContainer}>
         <RoundButton
           iconName={'camera-reverse-outline'}
-          onPress={() => AculabBaseClass.swapCam(localVideoMuted, activeCall)}
+          onPress={() =>
+            AculabBaseClass.swapCam(
+              localVideoMuted,
+              activeCall as AculabCloudOutgoingCall,
+            )
+          }
         />
         <RoundButton
           iconName={videoIcon}
           onPress={() => {
             AculabBaseClass._camera = !AculabBaseClass._camera;
             setLocalVideoMuted(!localVideoMuted);
-            AculabBaseClass.mute(activeCall);
+            AculabBaseClass.mute(activeCall!);
           }}
         />
         <RoundButton
@@ -493,7 +581,7 @@ const AcuMobFunctionComponent = (props: AcuMobFunctionComponent) => {
           onPress={() => {
             AculabBaseClass._mic = !AculabBaseClass._mic;
             setLocalMicMuted(!localMicMuted);
-            AculabBaseClass.mute(activeCall);
+            AculabBaseClass.mute(activeCall!);
           }}
         />
       </View>

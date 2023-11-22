@@ -303,7 +303,7 @@ PODS:
   - React-jsinspector (0.70.1)
   - React-logger (0.70.1):
     - glog
-  - react-native-aculab-client (1.4.1-beta):
+  - react-native-aculab-client (1.5.2-beta):
     - React-Core
     - react-native-webrtc
   - react-native-get-random-values (1.9.0):
@@ -597,7 +597,7 @@ SPEC CHECKSUMS:
   React-jsiexecutor: 47201924064085223b63ec7e3ee9fd40ad8508e8
   React-jsinspector: 1363be638eccfe1aea1b10dd42e632b0397e5ec8
   React-logger: 7bd569e3857d74ed412ce0a5c51f421ff7d4ca7f
-  react-native-aculab-client: 2dda9cffde06d3b763731aa8b797932914774513
+  react-native-aculab-client: cf5c2700fb8e7a338380046c7ba33118dbf13932
   react-native-get-random-values: dee677497c6a740b71e5612e8dbd83e7539ed5bb
   react-native-safe-area-context: 1d596539b05a78f2b346e954e7c577f6f9be7544
   react-native-webrtc: 0df36747802476e758af6b6dceccdeaed8c826c2

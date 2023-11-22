@@ -2,6 +2,7 @@
   "name": "acumobcomexample",
   "version": "1.0.0",
   "private": true,
+  "author": "Martin Folke <martin.folke@aculab.com> (https://github.com/folin03)",
   "scripts": {
     "android": "react-native run-android",
     "ios": "react-native run-ios",
@@ -10,7 +11,7 @@
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx"
   },
   "dependencies": {
-    "@aculab-com/react-native-aculab-client": "^1.4.1-beta",
+    "@aculab-com/react-native-aculab-client": "^1.5.2-beta",
     "@react-navigation/native": "^6.0.13",
     "@react-navigation/native-stack": "^6.9.0",
     "react": "18.1.0",
